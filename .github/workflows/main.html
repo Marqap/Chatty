@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #chat-log {
+            padding: 20px;
+            overflow-y: scroll;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+        #message-input {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #send-btn {
+            width: 20%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #send-btn:hover {
+            background-color: #3e8e41;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat App</h1>
+    <div id="chat-log"></div>
+    <input id="message-input" type="text" placeholder="Type a message...">
+    <button id="send-btn">Send</button>
+
+    <script>
+        const socket = new WebSocket('wss://your-p3-server.com/ws');
+
+        socket.onmessage = (event) => {
+            const messageHTML = `
+                <p>
+                    <span>${event.data}</span>
+                </p>
+            `;
+            document.getElementById('chat-log').innerHTML += messageHTML;
+            document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
+        };
+
+        document.getElementById('send-btn').addEventListener('click', () => {
+            const message = document.getElementById('message-input').value.trim();
+            if (message!== '') {
+                socket.send(message);
+                document.getElementById('message-input').value = '';
+            }
+        });
+    </script>
+</body>
+</html>
